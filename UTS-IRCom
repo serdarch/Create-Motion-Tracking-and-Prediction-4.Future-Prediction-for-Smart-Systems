@@ -1,0 +1,52 @@
+#include <SoftwareSerial.h>
+SoftwareSerial ESPserial(2, 3); // RX | TX
+int led1=4;
+//…
+int cm = 0;
+long readUltrasonicDistance(int pin)
+{pinMode(pin, OUTPUT);  // Clear the trigger
+digitalWrite(pin, LOW);
+delayMicroseconds(2);
+// Sets the pin on HIGH state for 10 milliseconds
+digitalWrite(pin, HIGH);
+delayMicroseconds(10);
+digitalWrite(pin, LOW);
+pinMode(pin, INPUT);
+// Reads the pin, and returns the sound wave travel 
+// time in microseconds
+return pulseIn(pin, HIGH);
+}
+void setup() 
+{/…
+//while (!Serial)   { ; }
+// Start the software serial for communication with
+//the ESP8266
+ESPserial.begin(9600);
+pinMode(led1, OUTPUT);
+/…
+digitalWrite(led1, LOW);
+…
+pinMode(LED_BUILTIN, OUTPUT);
+Serial.println(“”);
+…} 
+void loop() 
+{// listen for communication from the ESP8266 and then 
+// write it to the serial monitor
+cm = 0.01723 * readUltrasonicDistance(8);
+Serial.print(cm);
+Serial.println(“cm”);
+delay(100);
+if (cm >250){  	  …  }
+else if(cm <250 & cm >= 150){…}
+else if (cm<150  & cm >=75){…}
+else if (cm <75){…}
+else {…}
+if ( ESPserial.available() )   
+{  Serial.write( ESPserial.read() );  }
+if ( Serial.available() )       
+{  ESPserial.write( ‘Esp Serial Data Read from = ‘);
+ESPserial.write(Serial.read());
+Serial.print(Serial.read());}
+digitalWrite(LED_BUILTIN, LOW);   
+delay(1000);                        digitalWrite(LED_BUILTIN, HIGH;
+delay(2000); }
