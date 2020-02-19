@@ -1,0 +1,95 @@
+//Motion Detection Network
+//of Motion-Based Infrared Sensors depended on 
+//light intensity controlled by Photoresistor(LDR)
+//and work independent under more light
+//by Serdar Erişen (serdarch@gmail.com) - CC BY 3.0
+//First generated 09/03/2018 
+//Update(1)	10/03/2018	NN0.1
+
+int LDR = A0;
+int LED1 = 2;
+int LED2 = 3;
+int PIR1 = 5;
+int PIR2 = 6;
+int PIR3 = 7;
+int PIR4 = 8;
+int RGBg = 11;
+int RGBb = 12;
+int RGBr = 13;
+
+int pirState1;
+int pirState2;
+int pirState3;
+int pirState4;
+int ldrValue;
+int MD1;
+int MD2;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIR1, INPUT);
+  pinMode(PIR2, INPUT);
+  pinMode(PIR3, INPUT);
+  pinMode(PIR4, INPUT);
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(RGBg, OUTPUT);
+  pinMode(RGBb, OUTPUT);
+  pinMode(RGBr, OUTPUT);
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
+  digitalWrite(RGBr, LOW);
+  digitalWrite(RGBb, LOW);
+  digitalWrite(RGBg, LOW);
+}
+
+void loop(){
+  ldrValue = analogRead(LDR);
+  Serial.print("Analog reading = ");
+  Serial.println(ldrValue);	
+  if (ldrValue < 340) {
+	digitalWrite(LED1, HIGH);
+    digitalWrite(LED2, HIGH);
+    digitalWrite(RGBr, HIGH);
+    digitalWrite(RGBb, LOW);
+    digitalWrite(RGBg, LOW);
+	} 
+  else {
+    pirState1 = digitalRead(PIR1);
+  	pirState2 = digitalRead(PIR2);
+  	pirState3 = digitalRead(PIR3);
+  	pirState4 = digitalRead(PIR4);
+    if (pirState1==HIGH or pirState2==HIGH) {
+      int MD1 = 1;
+      digitalWrite(LED1, HIGH);
+      digitalWrite(RGBr, LOW);
+      digitalWrite(RGBb, HIGH);
+      digitalWrite(RGBg, LOW);
+      delay(1000);
+      Serial.print("MD1 = ");
+      Serial.println(MD1);  
+      digitalWrite(LED1, LOW);
+      delay(500);
+    }
+ 	else if(pirState3==HIGH or pirState4==HIGH){
+      int MD2 = 1;
+      digitalWrite(LED2, HIGH);
+      digitalWrite(RGBr, LOW);
+      digitalWrite(RGBb, LOW);
+      digitalWrite(RGBg, HIGH);
+      delay(1000);
+      Serial.print("MD2 = ");
+      Serial.println(MD2);
+      digitalWrite(LED2, LOW);
+      delay(500);
+    }    
+  	else {
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
+      digitalWrite(RGBr, LOW);
+      digitalWrite(RGBb, LOW);
+      digitalWrite(RGBg, LOW);
+      int MD1 = 0; int MD2 = 0;
+    }
+  }
+}
