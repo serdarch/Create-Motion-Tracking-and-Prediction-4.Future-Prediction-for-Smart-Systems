@@ -1,0 +1,189 @@
+//Motion Detection Network
+//Additional Arduino Uno microprocessor
+//for Remote Communication and Automation Systems
+//responding to first Arduino Uno loop
+//by Serdar Erişen (serdarch@gmail.com) - CC BY 3.0
+//First generated 09/03/2018 
+//Update(3)	11/03/2018	source from: IRCom NN0.2
+#include <IRremote.h>
+#include <Servo.h>
+
+int IR = 9;
+int RGBr = 10;
+int RGBb = 11;
+int RGBg = 12;
+
+int pos = 0;
+int stop = 0;
+Servo servo_7;
+IRrecv irrecv(IR);
+decode_results results;
+unsigned long key_val = 0;
+
+void setup(){
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  servo_7.attach(7);
+  pinMode(RGBg, OUTPUT);
+  pinMode(RGBb, OUTPUT);
+  pinMode(RGBr, OUTPUT);
+  digitalWrite(RGBr, LOW);
+  digitalWrite(RGBb, LOW);
+  digitalWrite(RGBg, HIGH);
+  servo_7.write(pos);
+}
+
+void loop(){
+  if (irrecv.decode(&results))
+  {
+     if (results.value == 0XFFFFFFFF)
+          results.value = key_val;
+    
+        switch(results.value){
+          case 0xFD00FF:
+          Serial.println("OFF");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, LOW);
+          digitalWrite(RGBg, LOW);
+          for (pos < 180; pos > 0; pos = 0) {           
+   		  servo_7.write(pos);    
+   		  delay(15);
+          }
+          break;
+          case 0xFD807F:
+          Serial.println("VOL+");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);          
+          break;
+          case 0xFD40BF:
+          Serial.println("FUNC/STOP");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, HIGH);
+          break;
+          case 0xFD20DF:
+          Serial.println("|<< FBACK");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, HIGH);
+          for (pos = 180; pos >= 0; pos -= 1) {           
+   		  servo_7.write(pos);    
+   		  delay(15);
+          }
+          break;
+          case 0xFDA05F:
+          Serial.println(">|| PAUSE");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, LOW);
+          digitalWrite(RGBg, HIGH);
+          break ;          
+          case 0xFD609F:
+          Serial.println(">>| FFORWARD");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          for (pos = 0; pos <= 180; pos += 1) {           
+   		  servo_7.write(pos);
+    	  delay(15);
+          }
+          break ;  
+          case 0xFD10EF:
+          Serial.println("CH-");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break;
+          case 0xFD906F:
+          Serial.println("VOL-");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;  
+          case 0xFD50AF:
+          Serial.println("CH+");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, LOW);
+          digitalWrite(RGBg, HIGH);
+          break ;    
+          case 0xFD30CF:
+          Serial.println("0");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFDB04F:
+          Serial.println("EQ");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, HIGH);
+          break ;  
+          case 0xFD708F:
+          Serial.println("ST/REPT");
+          digitalWrite(RGBr, HIGH); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, HIGH);
+          break ;
+          case 0xFD08F7:
+          Serial.println("1");
+          delay(250);
+          Serial.println(results.value, HEX);
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD8877:
+          Serial.println("2");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD48B7:
+          Serial.println("3");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD28D7:
+          Serial.println("4");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFDA857:
+          Serial.println("5");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD6897:
+          Serial.println("6");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD18E7:
+          Serial.println("7");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD9867:
+          Serial.println("8");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;
+          case 0xFD58A7:
+          Serial.println("9");
+          digitalWrite(RGBr, LOW); 	
+          digitalWrite(RGBb, HIGH);
+          digitalWrite(RGBg, LOW);
+          break ;      
+        }
+    key_val = results.value;
+    Serial.println(results.value, HEX);
+    irrecv.resume(); 
+  }
+  delay(100);
+}
