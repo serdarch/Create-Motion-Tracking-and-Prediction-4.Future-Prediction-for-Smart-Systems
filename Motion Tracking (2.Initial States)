@@ -1,0 +1,16 @@
+%% 2.Finding initial states (and/through changing states)
+for n = 1:(numFiles-1)
+    h{n}= i{n} - i{n+1};   
+    sum = sum(cat(3,h{:}),3);
+    meanH = sumH/(numFiles-1);   
+    hStd{n} = ((h{n}-meanH).^2);
+    hSt = sqrt(sum(cat(3,hStd{:}),3)/(numFiles-1));
+    
+    h_{n}= h{n}>0.65; % Thresholding
+    sumH_= sum(cat(3,h_{:}),3);
+    meanH_ = sumH_/(numFiles-1); 
+    h_Std{n} = ((h_{n}-meanH_).^2);
+    h_St = sqrt(sum(cat(3,h_Std{:}),3)/(numFiles-1));   
+% singular value decomposition 
+    [uh{n} sh{n} vh{n}] = svd(h{n});
+end
