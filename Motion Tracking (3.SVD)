@@ -1,0 +1,16 @@
+%% 3.Finding moving agents and states after each action
+for n = 1:(numFiles-1)
+    m{n}= i{n+1} - i{n};   
+    sum = sum(cat(3,m{:}),3);
+    meanM = sumM/(numFiles-1);   
+    mStd{n} = ((m{n}-meanM).^2);
+    mSt = sqrt(sum(cat(3,mStd{:}),3)/(numFiles-1));
+  
+    m_{n}= m{n}>0.65; %Thresholding
+    sumM_= sum(cat(3,m_{:}),3);
+    meanM_ = sumM_/(numFiles-1); 
+    m_Std{n} = ((m_{n}-meanM_).^2);
+    m_St = sqrt(sum(cat(3,m_Std{:}),3)/(numFiles-1));   
+
+    [um{n} sm{n} vm{n}] = svd(m{n});
+end
