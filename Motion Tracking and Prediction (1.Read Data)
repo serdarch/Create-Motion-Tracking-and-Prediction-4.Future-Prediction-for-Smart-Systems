@@ -1,0 +1,37 @@
+%% 1. Read data
+clear;  close all;   clc;
+jpgFiles = dir('. . .\*.jpg');
+numFiles = length(jpgFiles);
+i = cell(1,numFiles);
+for k = 1:numFiles
+    i{k} = imread(jpgFiles(k).name);
+    i{k} = im2double(i{k});
+% Optional for calculations of mean and standard 
+% deviation as well as the singular value decompositions
+    sumi=sum(cat(3,i{:}),3);
+    meani = sumi/numFiles;   
+    iStd{k} = ((i{k}-meani).^2);
+    iSt = sqrt(sum(cat(3,iStd{:}),3)/numFiles);
+% attentional threshold for selective recognition
+    i_{k}=i{k}>0.4; 
+    sumi_=sum(cat(3,i_{:}),3); 
+    meani_ = sumi_/numFiles;    
+    i_Std{k} = ((i_{k}-meani_).^2);
+    i_St = sqrt(sum(cat(3,i_Std{:}),3)/numFiles);
+% singular value decomposition
+    [u{k} s{k} v{k}] = svd(i{k});
+end	for n = 1:(numFiles-1)
+    h{n}= i{n} - i{n+1};   
+    sum = sum(cat(3,h{:}),3);
+    meanH = sumH/(numFiles-1);   
+    hStd{n} = ((h{n}-meanH).^2);
+    hSt = sqrt(sum(cat(3,hStd{:}),3)/(numFiles-1));
+    
+    h_{n}= h{n}>0.65; % Thresholding
+    sumH_= sum(cat(3,h_{:}),3);
+    meanH_ = sumH_/(numFiles-1); 
+    h_Std{n} = ((h_{n}-meanH_).^2);
+    h_St = sqrt(sum(cat(3,h_Std{:}),3)/(numFiles-1));   
+% singular value decomposition 
+    [uh{n} sh{n} vh{n}] = svd(h{n});
+end
