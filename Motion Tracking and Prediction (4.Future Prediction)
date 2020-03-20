@@ -1,0 +1,19 @@
+%% 4.Prediction
+for n = 1:(numFiles-1)
+    [u{n} s{n} v{n}] = svd(m{n});   
+    theta{0} = 1;
+% Normal equation to find coefficient theta among % input-output successions
+    theta{n-1}=(u{n-1}'*u{n-1})'*u{n-1}'*u{n};
+    thetaLast = theta{n-1};
+% without knowing theta{n} -gradient descent (with 1% % learning rate) or the coefficient-which is not trained
+    alpha = 0.01;
+    theta{n} = thetaLast - alpha/3*u{n-1}'*(u{n-1}*thetaLast-u{n});
+    theta{0}=1;
+    uN = theta{0} + theta{n-1}*u{n-1} + theta{n}*u{n};
+    thetaV{n-1}=(v{n-1}'*v{n-1})'*v{n-1}'*v{n};
+    thetaVLast = thetaV{n-1};
+% without knowing theta{n} >>>
+    thetaV{n} = thetaVLast - alpha/3*u{n-1}'*(u{n-1}*thetaVLast-u{n});
+    vN = theta{0} + thetaV{n-1}*v{n-1} + thetaV{n}*v{n};
+end
+predictX = uN * s{numFiles} * vN';
